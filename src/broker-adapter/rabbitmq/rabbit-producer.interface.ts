@@ -3,6 +3,8 @@ import { Message } from '../message';
 import { Env } from '../../infrastructure/env';
 import { IProducer } from '../producer.interface';
 
+declare const Buffer
+
 export class RabbitProducer implements IProducer {
     produce<T extends Message>(queue: string, message: T): void {
         amqp.connect(Env.messageBrokerAddress)
@@ -12,7 +14,7 @@ export class RabbitProducer implements IProducer {
                         message.publishedAt = new Date();
                         const json = JSON.stringify(message);
                         c.assertQueue(queue);
-                        c.sendToQueue(queue, new Buffer(json));
+                        c.sendToQueue(queue, Buffer.from(json));
                     })
             })
     }
